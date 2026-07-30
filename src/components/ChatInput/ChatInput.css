@@ -1,0 +1,77 @@
+.chat-input-container {
+  padding: 16px 20px;
+  background-color: #ffffff;
+  border-top: 1px solid #fce4e4;
+  display: flex;
+  justify-content: center;
+}
+
+.input-box {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #f0d0d0;
+  border-radius: 30px;
+  padding: 6px 8px;
+  width: 100%;
+  max-width: 750px;
+  transition: border-color 0.2s;
+}
+
+.input-box:focus-within {
+  border-color: #dc2626;
+}
+
+.message-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 15px;
+  padding: 10px 8px;
+  resize: none;
+  max-height: 120px;
+  line-height: 1.4;
+  color: #1f1f1f;
+}
+
+.message-input::placeholder {
+  color: #9ca3af;
+}
+
+.input-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #b91c1c;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.input-action:hover {
+  background-color: #fee2e2;
+}
+
+.input-action.mic-btn.active {
+  color: #dc2626;
+  background-color: #fee2e2;
+}
+
+.voice-chat-btn {
+  background-color: #1f1f1f;
+  color: white;
+  border-radius: 50%;
+  margin-left: 4px;
+}
+
+.voice-chat-btn:hover {
+  background-color: #333333;
+}
+
+.voice-chat-btn.active {
+  background-color: #dc2626;
+  color: white;
+}

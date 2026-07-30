@@ -1,0 +1,47 @@
+import { useState } from 'react'
+import { FiCopy, FiBookOpen } from 'react-icons/fi'
+import './Message.css'
+
+export default function Message({ message }) {
+  const [showCopy, setShowCopy] = useState(false)
+  const isUser = message.role === 'user'
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(message.content)
+    setShowCopy(true)
+    setTimeout(() => setShowCopy(false), 1500)
+  }
+
+  return (
+    <div className={`message-row ${isUser ? 'user-row' : 'assistant-row'}`}>
+      <div className={`message-bubble ${isUser ? 'user' : 'assistant'}`}>
+        <p>{message.content}</p>
+      </div>
+      <div
+        className={`message-actions ${isUser ? 'user-actions' : 'assistant-actions'}`}
+        onMouseEnter={() => isUser && setShowCopy(true)}
+        onMouseLeave={() => isUser && setShowCopy(false)}
+      >
+        {isUser ? (
+          showCopy && (
+            <button className="action-btn copy-btn" onClick={handleCopy} title="Copier">
+              <FiCopy size={14} />
+            </button>
+          )
+        ) : (
+          <>
+            <button className="action-btn copy-btn" onClick={handleCopy} title="Copier">
+              <FiCopy size={14} />
+            </button>
+            {message.sources && message.sources.length > 0 && (
+              <button className="action-btn sources-btn">
+                <FiBookOpen size={14} />
+                <span>Sources</span>
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
