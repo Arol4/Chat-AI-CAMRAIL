@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FiCopy, FiBookOpen } from 'react-icons/fi'
+import { MdSource, MdContentCopy } from "react-icons/md";
 import './Message.css'
 
 export default function Message({ message }) {
@@ -25,17 +25,17 @@ export default function Message({ message }) {
         {isUser ? (
           showCopy && (
             <button className="action-btn copy-btn" onClick={handleCopy} title="Copier">
-              <FiCopy size={14} />
+              <MdContentCopy size={14} />
             </button>
           )
         ) : (
           <>
             <button className="action-btn copy-btn" onClick={handleCopy} title="Copier">
-              <FiCopy size={14} />
+              <MdContentCopy size={14} />
             </button>
             {message.sources && message.sources.length > 0 && (
               <button className="action-btn sources-btn">
-                <FiBookOpen size={14} />
+                <MdSource size={14} />
                 <span>Sources</span>
               </button>
             )}
