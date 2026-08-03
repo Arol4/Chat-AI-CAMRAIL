@@ -5,7 +5,7 @@ import './UserProfile.css'
 export default function UserProfile({ collapsed }) {
   const [imgError, setImgError] = useState(false)
 
-  const initials = 'DK' // Djeufack Kafack
+  const initials = 'DK'
 
   return (
     <div className={`user-profile ${collapsed ? 'compact' : ''}`}>

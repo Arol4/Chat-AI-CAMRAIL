@@ -3,17 +3,8 @@ import { AppContext } from "./AppContext"
 import { v4 as uuidv4 } from 'uuid'
 
 const initialState = {
-  conversations: [
-    {
-      id: '1',
-      title: 'Présentation du projet',
-      messages: [
-        { id: 'm1', role: 'user', content: 'Bonjour, peux-tu me parler du projet ?', sources: [] },
-        { id: 'm2', role: 'assistant', content: 'Bien sûr ! Voici un résumé...', sources: ['Documentation interne', 'Rapport Q1'] }
-      ]
-    }
-  ],
-  activeConversationId: '1',
+  conversations: [],
+  activeConversationId: null,
   sidebarExpanded: true,
   isVoiceChatActive: false
 }
@@ -25,15 +16,18 @@ function appReducer(state, action) {
     case 'SET_SIDEBAR_EXPANDED':
       return { ...state, sidebarExpanded: action.payload }
     case 'CREATE_NEW_CHAT': {
+      const newId = action.payload?.id ?? uuidv4()
+
       const newConv = {
-        id: uuidv4(),
+        id: newId,
         title: 'Nouvelle conversation',
         messages: []
       }
+
       return {
         ...state,
         conversations: [newConv, ...state.conversations],
-        activeConversationId: newConv.id
+        activeConversationId: newId
       }
     }
     case 'DELETE_CONVERSATION': {
