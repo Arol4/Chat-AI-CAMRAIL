@@ -63,46 +63,7 @@ export default function ChatInput({ conversationId }) {
       sources: []
     }
 
-    let targetConversationId = conversationId ?? state.activeConversationId
-
-    // Si aucune conversation n'existe ou si aucune n'est active
-    if (!state.conversations.length || !targetConversationId) {
-      const newConversationId = uuidv4()
-
-      dispatch({
-        type: 'CREATE_NEW_CHAT',
-        payload: { id: newConversationId }
-      })
-
-      dispatch({
-        type: 'ADD_MESSAGE',
-        payload: {
-          conversationId: newConversationId,
-          message: userMessage
-        }
-      })
-
-      setInputValue('')
-
-      setTimeout(() => {
-        const aiMessage = {
-          id: uuidv4(),
-          role: 'assistant',
-          content: "Ceci est une réponse simulée de l'IA.",
-          sources: ['Documentation', 'FAQ']
-        }
-
-        dispatch({
-          type: 'ADD_MESSAGE',
-          payload: {
-            conversationId: newConversationId,
-            message: aiMessage
-          }
-        })
-      }, 1000)
-
-      return
-    }
+    const targetConversationId = conversationId ?? state.activeConversationId ?? uuidv4()
 
     dispatch({
       type: 'ADD_MESSAGE',

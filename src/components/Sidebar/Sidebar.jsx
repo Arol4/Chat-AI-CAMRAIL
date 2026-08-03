@@ -1,5 +1,6 @@
 import { useAppContext } from '../../context/AppContext'
 import { FiTrash2, FiChevronLeft, FiChevronRight, FiPlus } from 'react-icons/fi'
+import { v4 as uuidv4 } from 'uuid'
 import UserProfile from '../UserProfile/UserProfile'
 import logo from '../../assets/logo-camrail.png'
 import './Sidebar.css'
@@ -8,7 +9,13 @@ export default function Sidebar() {
   const { state, dispatch } = useAppContext()
   const { conversations, activeConversationId, sidebarExpanded } = state
 
-  const handleNewChat = () => dispatch({ type: 'CREATE_NEW_CHAT' })
+  const handleNewChat = () => {
+    dispatch({
+      type: 'CREATE_NEW_CHAT',
+      payload: { id: uuidv4() }
+    })
+  }
+
   const handleDelete = (e, id) => {
     e.stopPropagation()
     dispatch({ type: 'DELETE_CONVERSATION', payload: id })
