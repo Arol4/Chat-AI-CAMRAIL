@@ -91,3 +91,18 @@
   font-size: 13px;
   font-weight: 500;
 }
+
+.sources-list {
+  margin: 10px 0 0 0;
+  padding: 12px 14px 12px 22px;
+  border-left: 3px solid #d1d5db;
+  background: rgba(0, 0, 0, 0.02);
+  color: #4b5563;
+  list-style: disc;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.sources-list li + li {
+  margin-top: 6px;
+}

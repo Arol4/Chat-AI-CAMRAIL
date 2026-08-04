@@ -5,6 +5,7 @@ import './Message.css'
 export default function Message({ message }) {
   const [showCopy, setShowCopy] = useState(false)
   const [showReasoning, setShowReasoning] = useState(false)
+  const [showSources, setShowSources] = useState(false)
 
   const isUser = message.role === 'user'
 
@@ -40,6 +41,13 @@ export default function Message({ message }) {
         )}
 
         <p>{message.content}</p>
+        {showSources && message.sources && message.sources.length > 0 && (
+          <ul className="sources-list">
+            {message.sources.map((source, index) => (
+              <li key={index}>{source}</li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div
@@ -59,9 +67,9 @@ export default function Message({ message }) {
               <MdContentCopy size={14} />
             </button>
             {message.sources && message.sources.length > 0 && (
-              <button className="action-btn sources-btn">
+              <button className="action-btn sources-btn" onClick={() => setShowSources((prev) => !prev)}>
                 <MdSource size={14} />
-                <span>Sources</span>
+                <span>{showSources ? 'Masquer sources' : 'Sources'}</span>
               </button>
             )}
           </>
