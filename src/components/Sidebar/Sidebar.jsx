@@ -1,5 +1,6 @@
 import { useAppContext } from '../../context/AppContext'
-import { FiTrash2, FiChevronLeft, FiChevronRight, FiPlus } from 'react-icons/fi'
+import { FiTrash2, FiChevronLeft, FiChevronRight, FiPlus, FiEdit } from 'react-icons/fi'
+import { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import UserProfile from '../UserProfile/UserProfile'
 import logo from '../../assets/logo-camrail.png'
@@ -8,6 +9,16 @@ import './Sidebar.css'
 export default function Sidebar() {
   const { state, dispatch } = useAppContext()
   const { conversations, activeConversationId, sidebarExpanded } = state
+  const [editingConversationId, setEditingConversationId] = useState(null)
+  const [draftTitle, setDraftTitle] = useState('')
+  const renameInputRef = useRef(null)
+
+  useEffect(() => {
+    if (editingConversationId !== null) {
+      renameInputRef.current?.focus()
+      renameInputRef.current?.select()
+    }
+  }, [editingConversationId])
 
   const handleNewChat = () => {
     dispatch({
@@ -19,6 +30,35 @@ export default function Sidebar() {
   const handleDelete = (e, id) => {
     e.stopPropagation()
     dispatch({ type: 'DELETE_CONVERSATION', payload: id })
+  }
+
+  const handleRenameStart = (e, conv) => {
+    e.stopPropagation()
+    setEditingConversationId(conv.id)
+    setDraftTitle(conv.title)
+  }
+
+  const handleRenameSubmit = (e, id) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const nextTitle = draftTitle.trim()
+
+    if (nextTitle) {
+      dispatch({
+        type: 'RENAME_CONVERSATION',
+        payload: { id, title: nextTitle }
+      })
+    }
+
+    setEditingConversationId(null)
+    setDraftTitle('')
+  }
+
+  const handleRenameCancel = (e) => {
+    e.stopPropagation()
+    setEditingConversationId(null)
+    setDraftTitle('')
   }
 
   return (
@@ -51,12 +91,35 @@ export default function Sidebar() {
               <div
                 key={conv.id}
                 className={`conversation-item ${conv.id === activeConversationId ? 'active' : ''}`}
-                onClick={() => dispatch({ type: 'SET_ACTIVE_CONVERSATION', payload: conv.id })}
+                onClick={editingConversationId === conv.id ? undefined : () => dispatch({ type: 'SET_ACTIVE_CONVERSATION', payload: conv.id })}
               >
-                <span className="conversation-name">{conv.title}</span>
-                <button className="delete-btn" onClick={(e) => handleDelete(e, conv.id)} title="Supprimer">
-                  <FiTrash2 size={16} />
-                </button>
+                {editingConversationId === conv.id ? (
+                  <input
+                    ref={renameInputRef}
+                    className="conversation-name-input"
+                    value={draftTitle}
+                    onChange={(e) => setDraftTitle(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.target.select()}
+                    onBlur={(e) => handleRenameSubmit(e, conv.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleRenameSubmit(e, conv.id)
+                      if (e.key === 'Escape') handleRenameCancel(e)
+                    }}
+                  />
+                ) : (
+                  <>
+                    <span className="conversation-name">{conv.title}</span>
+                    <div className="conversation-actions">
+                      <button className="edit-btn" onClick={(e) => handleRenameStart(e, conv)} title="Renommer">
+                        <FiEdit size={16} />
+                      </button>
+                      <button className="delete-btn" onClick={(e) => handleDelete(e, conv.id)} title="Supprimer">
+                        <FiTrash2 size={16} />
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             ))}
           </div>

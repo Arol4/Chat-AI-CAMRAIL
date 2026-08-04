@@ -109,6 +109,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   padding: 10px 8px;
   border-radius: 10px;
   cursor: pointer;
@@ -134,6 +135,25 @@
   margin-right: 8px;
 }
 
+.conversation-name-input {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  color: #7f1d1d;
+  padding: 6px 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.conversation-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.edit-btn,
 .delete-btn {
   opacity: 0.5;
   color: #b91c1c;
@@ -142,10 +162,12 @@
   transition: opacity 0.2s, background 0.2s;
 }
 
+.conversation-item:hover .edit-btn,
 .conversation-item:hover .delete-btn {
   opacity: 1;
 }
 
+.edit-btn:hover,
 .delete-btn:hover {
   background-color: #fca5a5;
 }

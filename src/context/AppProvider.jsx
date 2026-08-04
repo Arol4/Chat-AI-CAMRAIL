@@ -42,6 +42,23 @@ function appReducer(state, action) {
     case 'SET_ACTIVE_CONVERSATION':
       return { ...state, activeConversationId: action.payload }
 
+    case 'RENAME_CONVERSATION': {
+      const nextTitle = action.payload.title.trim()
+
+      if (!nextTitle) {
+        return state
+      }
+
+      return {
+        ...state,
+        conversations: state.conversations.map(conv =>
+          conv.id === action.payload.id
+            ? { ...conv, title: nextTitle }
+            : conv
+        )
+      }
+    }
+
     case 'ADD_MESSAGE': {
       const { conversationId, message } = action.payload
 
