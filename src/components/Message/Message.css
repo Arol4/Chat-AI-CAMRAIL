@@ -25,6 +25,30 @@
   color: #1f1f1f;
 }
 
+.reasoning-toggle {
+  border: none;
+  color: #4b5563;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px;
+  margin: 0 0 6px 0;
+  border-radius: 8px;
+}
+
+.reasoning-toggle:hover {
+  background-color: #fef2f2;
+}
+
+.message-reasoning {
+  margin: 0 0 12px 0;
+  padding: 15px 20px;
+  border-left: 2px solid red;
+  color: #4d4c4c;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .message-actions {
   display: flex;
   align-items: center;

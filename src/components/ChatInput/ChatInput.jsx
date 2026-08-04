@@ -80,7 +80,8 @@ export default function ChatInput({ conversationId }) {
         id: uuidv4(),
         role: 'assistant',
         content: "Ceci est une réponse simulée de l'IA.",
-        sources: ['Documentation', 'FAQ']
+        sources: ['Documentation', 'FAQ'],
+        reasoning: "L'IA a analysé la question et a généré une réponse basée sur les données disponibles."
       }
 
       dispatch({

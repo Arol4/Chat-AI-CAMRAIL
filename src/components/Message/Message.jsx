@@ -1,10 +1,17 @@
 import { useState } from 'react'
-import { MdSource, MdContentCopy } from "react-icons/md";
+import { MdSource, MdContentCopy, MdChevronRight } from "react-icons/md";
 import './Message.css'
 
 export default function Message({ message }) {
   const [showCopy, setShowCopy] = useState(false)
+  const [showReasoning, setShowReasoning] = useState(false)
+
   const isUser = message.role === 'user'
+
+  const hasReasoning =
+    typeof message?.reasoning === 'string'
+      ? message.reasoning.trim() !== ''
+      : Boolean(message?.reasoning)
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content)
@@ -15,8 +22,26 @@ export default function Message({ message }) {
   return (
     <div className={`message-row ${isUser ? 'user-row' : 'assistant-row'}`}>
       <div className={`message-bubble ${isUser ? 'user' : 'assistant'}`}>
+        {hasReasoning && (
+          <button
+            type="button"
+            className="reasoning-toggle"
+            onClick={() => setShowReasoning((prev) => !prev)}
+            aria-expanded={showReasoning}
+          >
+            <span>{showReasoning ? 'Masquer le raisonnement' : 'Afficher le raisonnement'}</span>
+          </button>
+        )}
+
+        {showReasoning && hasReasoning && (
+          <div className="message-reasoning">
+            {message.reasoning}
+          </div>
+        )}
+
         <p>{message.content}</p>
       </div>
+
       <div
         className={`message-actions ${isUser ? 'user-actions' : 'assistant-actions'}`}
         onMouseEnter={() => isUser && setShowCopy(true)}

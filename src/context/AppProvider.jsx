@@ -3,7 +3,16 @@ import { AppContext } from "./AppContext"
 import { v4 as uuidv4 } from 'uuid'
 
 const initialState = {
-  conversations: [],
+  conversations: [
+    {
+      id: '1',
+      title: 'Présentation du projet',
+      messages: [
+        { id: 'm1', role: 'user', content: 'Bonjour, peux-tu me parler du projet ?'},
+        { id: 'm2', role: 'assistant', content: 'Bien sûr ! Voici un résumé...', sources: ['Documentation interne', 'Rapport Q1'], reasoning: 'Le projet vise à améliorer l\'efficacité du transport ferroviaire en Afrique centrale.'}
+      ]
+    }
+  ],
   activeConversationId: null,
   sidebarExpanded: true,
   isVoiceChatActive: false
