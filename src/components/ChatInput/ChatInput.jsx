@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { FiPlus, FiMic, FiMicOff, FiPhone, FiPhoneOff } from 'react-icons/fi'
 import { useAppContext } from '../../context/AppContext'
+import { generateResponse } from '../../services/aiService'
 import { v4 as uuidv4 } from 'uuid'
 import './ChatInput.css'
 
@@ -52,15 +53,14 @@ export default function ChatInput({ conversationId }) {
     // Ici on pourrait démarrer une logique de chat vocal bidirectionnel
   }
 
-  const handleSend = () => {
+  const handleSend = async (e) => {
     const text = inputValue.trim()
     if (!text) return
 
     const userMessage = {
       id: uuidv4(),
       role: 'user',
-      content: text,
-      sources: []
+      content: text
     }
 
     const targetConversationId = conversationId ?? state.activeConversationId ?? uuidv4()
@@ -75,23 +75,21 @@ export default function ChatInput({ conversationId }) {
 
     setInputValue('')
 
-    setTimeout(() => {
-      const aiMessage = {
-        id: uuidv4(),
-        role: 'assistant',
-        content: "Ceci est une réponse simulée de l'IA.",
-        sources: ['Documentation', 'FAQ'],
-        reasoning: "L'IA a analysé la question et a généré une réponse basée sur les données disponibles."
-      }
+    const aiMessage = {
+      id: uuidv4(),
+      role: 'assistant',
+      content: await generateResponse(text),
+      sources: ['Documentation', 'FAQ'],
+      reasoning: "L'IA a analysé la question et a généré une réponse basée sur les données disponibles."
+    }
 
-      dispatch({
-        type: 'ADD_MESSAGE',
-        payload: {
-          conversationId: targetConversationId,
-          message: aiMessage
-        }
-      })
-    }, 1000)
+    dispatch({
+      type: 'ADD_MESSAGE',
+      payload: {
+        conversationId: targetConversationId,
+        message: aiMessage
+      }
+    })
   }
 
   const handleKeyDown = (e) => {

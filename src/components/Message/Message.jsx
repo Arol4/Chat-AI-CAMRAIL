@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { MdSource, MdContentCopy, MdChevronRight } from "react-icons/md";
 import './Message.css'
 
@@ -40,7 +41,7 @@ export default function Message({ message }) {
           </div>
         )}
 
-        <p>{message.content}</p>
+        <p><ReactMarkdown>{message.content}</ReactMarkdown></p>
         {showSources && message.sources && message.sources.length > 0 && (
           <ul className="sources-list">
             {message.sources.map((source, index) => (
