@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
 import { FiPlus, FiMic, FiMicOff, FiPhone, FiPhoneOff } from 'react-icons/fi'
 import { useAppContext } from '../../context/AppContext'
-import { generateResponse } from '../../services/aiService'
+import { generateResponseStream } from '../../services/aiService'
 import { v4 as uuidv4 } from 'uuid'
 import './ChatInput.css'
 
 export default function ChatInput({ conversationId }) {
   const [inputValue, setInputValue] = useState('')
   const [listening, setListening] = useState(false)
+  const [response, setResponse] = useState('')
   const { state, dispatch } = useAppContext()
   const recognitionRef = useRef(null)
   const textareaRef = useRef(null)
@@ -75,10 +76,10 @@ export default function ChatInput({ conversationId }) {
 
     setInputValue('')
 
-    const aiMessage = {
+    const assistantMessage = {
       id: uuidv4(),
       role: 'assistant',
-      content: await generateResponse(text),
+      content: '',
       sources: ['Documentation', 'FAQ'],
       reasoning: "L'IA a analysé la question et a généré une réponse basée sur les données disponibles."
     }
@@ -87,9 +88,26 @@ export default function ChatInput({ conversationId }) {
       type: 'ADD_MESSAGE',
       payload: {
         conversationId: targetConversationId,
-        message: aiMessage
+        message: assistantMessage
       }
     })
+
+    const stream = await generateResponseStream(text)
+    let fullText = ''
+
+    for await (const chunk of stream) {
+      const chunkText = chunk.text()
+      fullText += chunkText
+
+      dispatch({
+        type: 'UPDATE_MESSAGE_CONTENT',
+        payload: {
+          conversationId: targetConversationId,
+          messageId: assistantMessage.id,
+          content: fullText
+        }
+      })
+    }
   }
 
   const handleKeyDown = (e) => {

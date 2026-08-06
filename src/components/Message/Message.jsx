@@ -21,7 +21,7 @@ export default function Message({ message }) {
     setTimeout(() => setShowCopy(false), 1500)
   }
 
-  return (
+  return (message.content.trim() !== '') && (
     <div className={`message-row ${isUser ? 'user-row' : 'assistant-row'}`}>
       <div className={`message-bubble ${isUser ? 'user' : 'assistant'}`}>
         {hasReasoning && (
@@ -41,7 +41,7 @@ export default function Message({ message }) {
           </div>
         )}
 
-        <p><ReactMarkdown>{message.content}</ReactMarkdown></p>
+        <ReactMarkdown>{message.content}</ReactMarkdown>
         {showSources && message.sources && message.sources.length > 0 && (
           <ul className="sources-list">
             {message.sources.map((source, index) => (

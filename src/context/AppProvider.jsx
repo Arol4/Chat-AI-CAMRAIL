@@ -113,6 +113,26 @@ function appReducer(state, action) {
     case 'SET_VOICE_CHAT_ACTIVE':
       return { ...state, isVoiceChatActive: action.payload }
 
+    case 'UPDATE_MESSAGE_CONTENT': {
+      const { conversationId, messageId, content } = action.payload
+
+      return {
+        ...state,
+        conversations: state.conversations.map(conv =>
+          conv.id === conversationId
+            ? {
+                ...conv,
+                messages: conv.messages.map(msg =>
+                  msg.id === messageId
+                    ? { ...msg, content }
+                    : msg
+                )
+              }
+            : conv
+        )
+      }
+    }
+
     default:
       return state
   }
