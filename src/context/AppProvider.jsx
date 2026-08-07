@@ -133,6 +133,46 @@ function appReducer(state, action) {
       }
     }
 
+    case 'UPDATE_MESSAGE_REASONING': {
+      const { conversationId, messageId, reasoning } = action.payload
+
+      return {
+        ...state,
+        conversations: state.conversations.map(conv =>
+          conv.id === conversationId
+            ? {
+                ...conv,
+                messages: conv.messages.map(msg =>
+                  msg.id === messageId
+                    ? { ...msg, reasoning }
+                    : msg
+                )
+              }
+            : conv
+        )
+      }
+    }
+
+    case 'UPDATE_MESSAGE_SOURCES': {
+      const { conversationId, messageId, sources } = action.payload
+
+      return {
+        ...state,
+        conversations: state.conversations.map(conv =>
+          conv.id === conversationId
+            ? {
+                ...conv,
+                messages: conv.messages.map(msg =>
+                  msg.id === messageId
+                    ? { ...msg, sources }
+                    : msg
+                )
+              }
+            : conv
+        )
+      }
+    }
+
     default:
       return state
   }

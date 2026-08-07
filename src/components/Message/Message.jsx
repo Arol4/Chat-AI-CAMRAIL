@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { MdSource, MdContentCopy, MdChevronRight } from "react-icons/md";
+import { MdSource, MdContentCopy } from "react-icons/md";
 import './Message.css'
 
 export default function Message({ message }) {
@@ -15,13 +15,15 @@ export default function Message({ message }) {
       ? message.reasoning.trim() !== ''
       : Boolean(message?.reasoning)
 
+  const hasContent = message.content.trim() !== ''
+
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content)
     setShowCopy(true)
     setTimeout(() => setShowCopy(false), 1500)
   }
 
-  return (message.content.trim() !== '') && (
+  return (
     <div className={`message-row ${isUser ? 'user-row' : 'assistant-row'}`}>
       <div className={`message-bubble ${isUser ? 'user' : 'assistant'}`}>
         {hasReasoning && (
@@ -37,15 +39,27 @@ export default function Message({ message }) {
 
         {showReasoning && hasReasoning && (
           <div className="message-reasoning">
-            {message.reasoning}
+            <ReactMarkdown>{message.reasoning}</ReactMarkdown>
           </div>
         )}
 
-        <ReactMarkdown>{message.content}</ReactMarkdown>
+        {hasContent ? (
+          <ReactMarkdown>{message.content}</ReactMarkdown>
+        ) : (
+          <div className="typing-placeholder">Écriture en cours...</div>
+        )}
         {showSources && message.sources && message.sources.length > 0 && (
           <ul className="sources-list">
             {message.sources.map((source, index) => (
-              <li key={index}>{source}</li>
+              <li key={index}>
+                {source.uri ? (
+                  <a href={source.uri} target="_blank" rel="noreferrer noopener">
+                    {source.title || source.uri}
+                  </a>
+                ) : (
+                  source.title || JSON.stringify(source)
+                )}
+              </li>
             ))}
           </ul>
         )}
@@ -70,7 +84,7 @@ export default function Message({ message }) {
             {message.sources && message.sources.length > 0 && (
               <button className="action-btn sources-btn" onClick={() => setShowSources((prev) => !prev)}>
                 <MdSource size={14} />
-                <span>{showSources ? 'Masquer sources' : 'Sources'}</span>
+                <span>{showSources ? 'Masquer sources' : 'Afficher les sources'}</span>
               </button>
             )}
           </>

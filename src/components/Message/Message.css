@@ -106,3 +106,12 @@
 .sources-list li + li {
   margin-top: 6px;
 }
+
+.sources-list a {
+  color: #831843;
+  text-decoration: none;
+}
+
+.sources-list a:hover {
+  text-decoration: underline;
+}

@@ -1,14 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
 import { FiPlus, FiMic, FiMicOff, FiPhone, FiPhoneOff } from 'react-icons/fi'
 import { useAppContext } from '../../context/AppContext'
-import { generateResponseStream } from '../../services/aiService'
+import { streamReasoningAndAnswer } from '../../services/aiService'
 import { v4 as uuidv4 } from 'uuid'
 import './ChatInput.css'
 
 export default function ChatInput({ conversationId }) {
   const [inputValue, setInputValue] = useState('')
   const [listening, setListening] = useState(false)
-  const [response, setResponse] = useState('')
   const { state, dispatch } = useAppContext()
   const recognitionRef = useRef(null)
   const textareaRef = useRef(null)
@@ -54,7 +53,7 @@ export default function ChatInput({ conversationId }) {
     // Ici on pourrait démarrer une logique de chat vocal bidirectionnel
   }
 
-  const handleSend = async (e) => {
+  const handleSend = async () => {
     const text = inputValue.trim()
     if (!text) return
 
@@ -80,8 +79,8 @@ export default function ChatInput({ conversationId }) {
       id: uuidv4(),
       role: 'assistant',
       content: '',
-      sources: ['Documentation', 'FAQ'],
-      reasoning: "L'IA a analysé la question et a généré une réponse basée sur les données disponibles."
+      sources: [],
+      reasoning: ''
     }
 
     dispatch({
@@ -92,21 +91,35 @@ export default function ChatInput({ conversationId }) {
       }
     })
 
-    const stream = await generateResponseStream(text)
-    let fullText = ''
-
-    for await (const chunk of stream) {
-      const chunkText = chunk.text()
-      fullText += chunkText
-
-      dispatch({
-        type: 'UPDATE_MESSAGE_CONTENT',
-        payload: {
-          conversationId: targetConversationId,
-          messageId: assistantMessage.id,
-          content: fullText
-        }
-      })
+    for await (const chunk of streamReasoningAndAnswer(text)) {
+      if (chunk.type === 'thought') {
+        dispatch({
+          type: 'UPDATE_MESSAGE_REASONING',
+          payload: {
+            conversationId: targetConversationId,
+            messageId: assistantMessage.id,
+            reasoning: chunk.full
+          }
+        })
+      } else if (chunk.type === 'answer') {
+        dispatch({
+          type: 'UPDATE_MESSAGE_CONTENT',
+          payload: {
+            conversationId: targetConversationId,
+            messageId: assistantMessage.id,
+            content: chunk.full
+          }
+        })
+      } else if (chunk.type === 'sources') {
+        dispatch({
+          type: 'UPDATE_MESSAGE_SOURCES',
+          payload: {
+            conversationId: targetConversationId,
+            messageId: assistantMessage.id,
+            sources: chunk.sources
+          }
+        })
+      }
     }
   }
 
