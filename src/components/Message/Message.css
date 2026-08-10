@@ -133,7 +133,7 @@
 }
 
 .reasoning-container code {
-  background: #1f2937;
+  background: #b88390;
   padding: 2px 6px;
   border-radius: 5px;
   font-family: "Fira Code", monospace;
@@ -143,5 +143,5 @@
   overflow-x: auto;
   padding: 16px;
   border-radius: 8px;
-  background: #0b1120;
+  background: #b88390;
 }
