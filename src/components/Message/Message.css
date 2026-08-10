@@ -40,15 +40,6 @@
   background-color: #fef2f2;
 }
 
-.message-reasoning {
-  margin: 0 0 12px 0;
-  padding: 15px 20px;
-  border-left: 2px solid red;
-  color: #4d4c4c;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
 .message-actions {
   display: flex;
   align-items: center;
@@ -114,4 +105,43 @@
 
 .sources-list a:hover {
   text-decoration: underline;
+}
+
+.reasoning-container {
+  padding: 0 0 0 20px;
+  border-left: 2px solid red;
+  color: #6d6d6d;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.reasoning-container p {
+  margin: 12px 0;
+}
+
+.reasoning-container ul,
+.reasoning-container ol {
+  padding-left: 28px;
+  margin: 10px 0;
+}
+
+.reasoning-container li {
+  margin: 6px 0;
+}
+
+.reasoning-container strong {
+  color: #fff;
+}
+
+.reasoning-container code {
+  background: #1f2937;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-family: "Fira Code", monospace;
+}
+
+.reasoning-container pre {
+  overflow-x: auto;
+  padding: 16px;
+  border-radius: 8px;
+  background: #0b1120;
 }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { MdSource, MdContentCopy } from "react-icons/md";
 import './Message.css'
+import ReasoningViewer from './ReasoningViewer/ReasoningViewer'
 
 export default function Message({ message }) {
   const [showCopy, setShowCopy] = useState(false)
@@ -37,11 +38,7 @@ export default function Message({ message }) {
           </button>
         )}
 
-        {showReasoning && hasReasoning && (
-          <div className="message-reasoning">
-            <ReactMarkdown>{message.reasoning}</ReactMarkdown>
-          </div>
-        )}
+        {showReasoning && hasReasoning && (<ReasoningViewer content={message.reasoning} />)}
 
         {hasContent ? (
           <ReactMarkdown>{message.content}</ReactMarkdown>

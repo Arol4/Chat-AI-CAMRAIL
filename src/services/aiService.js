@@ -3,59 +3,77 @@ import { GoogleGenAI } from "@google/genai";
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const client = new GoogleGenAI({ apiKey });
 
-const googleSearchTool = {
-    type: "google_search"
-};
-
 export async function* streamReasoningAndAnswer(prompt) {
     const stream = await client.interactions.create({
-        model: "gemini-2.5-flash",
+        model: "gemma-4-31b-it",
         input: prompt,
         generation_config: { thinking_summaries: "auto" },
-        tools: [googleSearchTool],
+        tools: [
+            {
+                type: "google_search"
+            }
+        ],
         stream: true,
     });
 
     let thoughts = "";
     let answer = "";
-    let groundingMetadata = null;
+    const sources = new Map();
 
     for await (const event of stream) {
-        if (event.event_type === "step.delta") {
-            if (event.delta.type === "thought_summary") {
-                const text = event.delta.content?.text || "";
-                thoughts += text;
-                yield { type: "thought", content: text, full: thoughts };
-            } 
-            else if (event.delta.type === "text" && event.delta.text) {
-                answer += event.delta.text;
-                yield { type: "answer", content: event.delta.text, full: answer };
-            }
+
+        if (event.event_type !== "step.delta") {
+            continue;
         }
-        // ✅ Récupération des métadonnées dans l'événement de fin
-        else if (event.event_type === "interaction.completed") {
-            console.log("Metadata at interaction.completed:", event.metadata);
-            groundingMetadata = event.metadata?.grounding_metadata || null;
+
+        const delta = event.delta;
+
+        if (delta.type === "thought_summary") {
+
+            const text = delta.content?.text || "";
+
+            thoughts += text;
+
+            yield {
+                type: "thought",
+                content: text,
+                full: thoughts
+            };
+        }
+
+        else if (delta.type === "text" && delta.text) {
+
+            answer += delta.text;
+
+            yield {
+                type: "answer",
+                content: delta.text,
+                full: answer
+            };
+        }
+
+        else if (delta.type === "text_annotation_delta") {
+
+            for (const annotation of delta.annotations || []) {
+
+                if (annotation.type !== "url_citation") {
+                    continue;
+                }
+
+                if (!sources.has(annotation.url)) {
+                    sources.set(annotation.url, {
+                        title: annotation.title || "Source",
+                        uri: annotation.url
+                    });
+                }
+            }
         }
     }
 
-    if (groundingMetadata) {
-        const sources = extractSources(groundingMetadata);
-        yield { type: "sources", sources };
+    if (sources.size > 0) {
+        yield {
+            type: "sources",
+            sources: [...sources.values()]
+        };
     }
-}
-
-function extractSources(metadata) {
-    const sources = [];
-    if (metadata.grounding_chunks) {
-        for (const chunk of metadata.grounding_chunks) {
-            if (chunk.web) {
-                sources.push({
-                    title: chunk.web.title || "Source",
-                    uri: chunk.web.uri
-                });
-            }
-        }
-    }
-    return sources;
 }
