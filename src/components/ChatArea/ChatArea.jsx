@@ -8,12 +8,13 @@ export default function ChatArea() {
   const activeConv = state.conversations.find(c => c.id === state.activeConversationId)
   const messages = activeConv ? activeConv.messages : []
   const isEmpty = messages.length === 0
+  const greetingName = state.username?.trim() || 'utilisateur'
 
   return (
     <div className={`chat-area ${isEmpty ? 'empty' : ''}`}>
       {isEmpty ? (
         <div className="welcome-message">
-          <h1>Bonjour, je vous écoute</h1>
+          <h1>{state.username ? `Bonjour ${greetingName}` : 'Bonjour, je vous écoute'}</h1>
           <ChatInput conversationId={state.activeConversationId} />
         </div>
       ) : (
