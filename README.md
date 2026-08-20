@@ -33,6 +33,7 @@ Ce projet est un client web de conversation assistée par IA, inspiré du compor
 - Vite
 - JavaScript
 - Google GenAI SDK
+- Keycloak JS
 - react-markdown
 - remark-gfm
 - rehype-highlight
@@ -46,6 +47,7 @@ Avant de lancer le projet, assurez-vous d'avoir installé :
 - Node.js 18 ou plus
 - npm
 - Une clé API Gemini / Google Generative AI valide
+- Une instance Keycloak accessible depuis l'application
 
 ## Installation
 
@@ -62,13 +64,18 @@ cd Chat-AI-CAMRAIL
 npm install
 ```
 
-3. Créez un fichier `.env` à la racine du projet avec votre clé API :
+3. Créez un fichier `.env` à la racine du projet à partir de `.env.example`, puis renseignez vos paramètres :
 
 ```env
 VITE_GEMINI_API_KEY=votre_cle_api
+VITE_KEYCLOAK_URL=http://localhost:8080
+VITE_KEYCLOAK_REALM=camrail-rda
+VITE_KEYCLOAK_CLIENT_ID=camrail-rda-frontend
 ```
 
-Un fichier d'exemple est également disponible dans le dépôt sous le nom `.env.example`.
+Le fichier `.env` est local et ne doit pas être versionné. Les variables `VITE_KEYCLOAK_*` doivent correspondre à un client Keycloak configuré pour l'application, avec une URL de redirection autorisée vers l'origine du frontend. L'application impose l'authentification au démarrage et propose la déconnexion depuis le profil utilisateur.
+
+Un fichier d'exemple est disponible dans le dépôt sous le nom `.env.example`.
 
 ## Lancer le projet
 
@@ -170,13 +177,16 @@ Les messages sont affichés avec `react-markdown`, et le raisonnement est rendu 
 
 ## Configuration de l’environnement
 
-La clé API est lue via la variable d'environnement :
+Les variables d'environnement utilisées par l'application sont :
 
 ```env
 VITE_GEMINI_API_KEY=xxxxxxxx
+VITE_KEYCLOAK_URL=http://localhost:8080
+VITE_KEYCLOAK_REALM=camrail-rda
+VITE_KEYCLOAK_CLIENT_ID=camrail-rda-frontend
 ```
 
-Important : cette variable doit être présente au moment où l'application démarre, car elle est utilisée dans le service IA.
+Important : ces variables doivent être présentes au moment où l'application démarre. La clé Gemini est utilisée par le service IA et les variables Keycloak par le service d'authentification.
 
 ## Points à noter
 
