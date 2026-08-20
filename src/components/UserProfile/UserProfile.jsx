@@ -1,11 +1,10 @@
-import { useAppContext } from '../../context/AppContext'
+import { FiLogOut } from 'react-icons/fi'
 import './UserProfile.css'
-import keycloak from "../../services/keycloak";
+import keycloak from '../../services/keycloak'
 
 export default function UserProfile({ collapsed }) {
-  const user = keycloak.tokenParsed;
-  console.log(user);
-  const username = user?.preferred_username || 'Utilisateur';
+  const user = keycloak.tokenParsed
+  const username = user?.preferred_username || 'Utilisateur'
   const initials = username
     .split(/\s+/)
     .filter(Boolean)
@@ -13,12 +12,22 @@ export default function UserProfile({ collapsed }) {
     .map(part => part[0]?.toUpperCase() ?? '')
     .join('') || 'U'
 
+  const handleLogout = () => {
+    keycloak.logout({ redirectUri: window.location.origin })
+  }
+
   return (
     <div className={`user-profile ${collapsed ? 'compact' : ''}`}>
-      <div className="avatar-circle">
-        <span className="avatar-initials">{initials}</span>
+      <div className="user-identity">
+        <div className="avatar-circle">
+          <span className="avatar-initials">{initials}</span>
+        </div>
+        {!collapsed && <span className="username">{username}</span>}
       </div>
-      {!collapsed && <span className="username">{username}</span>}
+      <button className="logout-btn" onClick={handleLogout} title="Se déconnecter" aria-label="Se déconnecter">
+        <FiLogOut size={18} />
+        {!collapsed && <span>Se déconnecter</span>}
+      </button>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 .user-profile {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding: 4px 8px;
   border-radius: 12px;
@@ -13,9 +14,17 @@
 }
 
 .user-profile.compact {
+  flex-direction: column;
   justify-content: center;
   padding: 8px 0;
-  gap: 0;
+  gap: 6px;
+}
+
+.user-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
 }
 
 .avatar-circle {
@@ -43,4 +52,25 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 7px;
+  border-radius: 8px;
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background-color: #fecaca;
+}
+
+.user-profile.compact .logout-btn {
+  padding: 8px;
 }
