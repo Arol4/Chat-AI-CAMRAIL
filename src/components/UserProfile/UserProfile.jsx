@@ -1,9 +1,11 @@
 import { useAppContext } from '../../context/AppContext'
 import './UserProfile.css'
+import keycloak from "../../services/keycloak";
 
 export default function UserProfile({ collapsed }) {
-  const { state } = useAppContext()
-  const username = state.username?.trim() || 'Utilisateur'
+  const user = keycloak.tokenParsed;
+  console.log(user);
+  const username = user?.preferred_username || 'Utilisateur';
   const initials = username
     .split(/\s+/)
     .filter(Boolean)

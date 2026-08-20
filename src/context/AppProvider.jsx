@@ -15,11 +15,7 @@ const initialState = {
   ],
   activeConversationId: '1',
   sidebarExpanded: true,
-  isVoiceChatActive: false,
-  isAuthenticated: false,
-  username: '',
-  accessToken: null,
-  authError: ''
+  isVoiceChatActive: false
 }
 
 function appReducer(state, action) {
@@ -116,35 +112,6 @@ function appReducer(state, action) {
 
     case 'SET_VOICE_CHAT_ACTIVE':
       return { ...state, isVoiceChatActive: action.payload }
-
-    case 'LOGIN_SUCCESS':
-      return {
-        ...state,
-        isAuthenticated: true,
-        username: action.payload.username,
-        accessToken: action.payload.accessToken,
-        authError: '',
-        activeConversationId: state.activeConversationId ?? state.conversations[0]?.id ?? null
-      }
-
-    case 'LOGIN_FAILURE':
-      return {
-        ...state,
-        isAuthenticated: false,
-        username: '',
-        accessToken: null,
-        authError: action.payload || 'Échec de la connexion.'
-      }
-
-    case 'LOGOUT':
-      return {
-        ...state,
-        isAuthenticated: false,
-        username: '',
-        accessToken: null,
-        authError: ''
-      }
-
     case 'UPDATE_MESSAGE_CONTENT': {
       const { conversationId, messageId, content } = action.payload
 
